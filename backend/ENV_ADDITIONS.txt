@@ -1,0 +1,13 @@
+# === EMAIL SERVICE (Add to your existing .env) ===
+# SendGrid (Recommended - 100 emails/day free)
+SENDGRID_API_KEY=your-sendgrid-api-key
+FROM_EMAIL=noreply@yourdomain.com
+
+# === VIDEO STORAGE (Add to your existing .env) ===
+# Cloudinary (Recommended - Free tier: 25GB storage, 25GB bandwidth/month)
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+
+# === FRONTEND URL (Add to your existing .env) ===
+FRONTEND_URL=http://localhost:5175

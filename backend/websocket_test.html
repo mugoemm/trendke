@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrendKe WebSocket Test Client</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .panel h2 {
+            margin-top: 0;
+            color: #444;
+        }
+        input, button, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .disconnect-btn {
+            background: #f44336;
+        }
+        .disconnect-btn:hover {
+            background: #da190b;
+        }
+        #messages {
+            height: 400px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #4CAF50;
+            background: white;
+        }
+        .message.error {
+            border-left-color: #f44336;
+        }
+        .message.info {
+            border-left-color: #2196F3;
+        }
+        .message.notification {
+            border-left-color: #ff9800;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.connected {
+            background: #4CAF50;
+            color: white;
+        }
+        .status.disconnected {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 TrendKe WebSocket Test Client</h1>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>Connection</h2>
+            <input type="text" id="token" placeholder="JWT Token" />
+            <button id="connectBtn" onclick="connect()">Connect</button>
+            <button id="disconnectBtn" onclick="disconnect()" disabled class="disconnect-btn">Disconnect</button>
+            <div id="status" class="status disconnected">Disconnected</div>
+        </div>
+        
+        <div class="panel">
+            <h2>Quick Actions</h2>
+            <button onclick="sendPing()">Send Ping</button>
+            <button onclick="joinRoom()">Join Room</button>
+            <button onclick="joinVideo()">Join Video</button>
+            <button onclick="sendChatMessage()">Send Chat</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>Custom Message</h2>
+            <textarea id="customMessage" rows="6" placeholder='{"action": "ping"}'></textarea>
+            <button onclick="sendCustom()">Send Custom Message</button>
+        </div>
+        
+        <div class="panel">
+            <h2>Messages</h2>
+            <div id="messages"></div>
+            <button onclick="clearMessages()">Clear Messages</button>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        
+        function addMessage(message, type = 'info') {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = typeof message === 'object' ? JSON.stringify(message, null, 2) : message;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function updateStatus(connected) {
+            const statusDiv = document.getElementById('status');
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            
+            if (connected) {
+                statusDiv.className = 'status connected';
+                statusDiv.textContent = 'Connected';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+            } else {
+                statusDiv.className = 'status disconnected';
+                statusDiv.textContent = 'Disconnected';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            }
+        }
+        
+        function connect() {
+            const token = document.getElementById('token').value;
+            if (!token) {
+                alert('Please enter a JWT token');
+                return;
+            }
+            
+            const wsUrl = `ws://localhost:8000/ws/connect?token=${token}`;
+            addMessage(`Connecting to ${wsUrl}...`, 'info');
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                addMessage('✅ WebSocket connected!', 'info');
+                updateStatus(true);
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                addMessage(data, data.type === 'notification' ? 'notification' : 'info');
+            };
+            
+            ws.onerror = (error) => {
+                addMessage(`❌ WebSocket error: ${error}`, 'error');
+            };
+            
+            ws.onclose = () => {
+                addMessage('🔌 WebSocket disconnected', 'info');
+                updateStatus(false);
+            };
+        }
+        
+        function disconnect() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        }
+        
+        function sendMessage(message) {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                alert('WebSocket is not connected');
+                return;
+            }
+            
+            ws.send(JSON.stringify(message));
+            addMessage(`📤 Sent: ${JSON.stringify(message)}`, 'info');
+        }
+        
+        function sendPing() {
+            sendMessage({ action: 'ping' });
+        }
+        
+        function joinRoom() {
+            const room = prompt('Enter room name:', 'general');
+            if (room) {
+                sendMessage({ action: 'join_room', room });
+            }
+        }
+        
+        function joinVideo() {
+            const videoId = prompt('Enter video ID:', 'video_123');
+            if (videoId) {
+                sendMessage({ action: 'join_video', video_id: videoId });
+            }
+        }
+        
+        function sendChatMessage() {
+            const room = prompt('Enter room name:', 'general');
+            const message = prompt('Enter message:', 'Hello World!');
+            if (room && message) {
+                sendMessage({ action: 'chat_message', room, message });
+            }
+        }
+        
+        function sendCustom() {
+            const customMessage = document.getElementById('customMessage').value;
+            try {
+                const message = JSON.parse(customMessage);
+                sendMessage(message);
+            } catch (e) {
+                alert('Invalid JSON: ' + e.message);
+            }
+        }
+        
+        function clearMessages() {
+            document.getElementById('messages').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
