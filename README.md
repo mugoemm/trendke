@@ -2,6 +2,13 @@
 
 A TikTok-style social media platform built with React and FastAPI, featuring video feeds, live streaming (voice/camera/studio modes), and a creator monetization system through virtual gifts.
 
+## 🌐 Live Deployment
+
+- **Frontend:** https://trendke-dp6tf5ueq-bernard-mugos-projects.vercel.app
+- **Backend API:** https://trendke.onrender.com
+- **API Documentation:** https://trendke.onrender.com/docs
+- **GitHub Repository:** https://github.com/mugoemm/trendke
+
 ## 🚀 Features
 
 ### Core Features
