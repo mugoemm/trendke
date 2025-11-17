@@ -30,11 +30,28 @@ if not SUPABASE_URL or not SUPABASE_KEY or \
     SUPABASE_KEY = "placeholder-key"
 
 try:
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    # Create client with minimal options to avoid proxy parameter issues
+    from supabase.lib.client_options import ClientOptions
+    options = ClientOptions(
+        schema="public",
+        auto_refresh_token=True,
+        persist_session=True
+    )
+    supabase: Client = create_client(
+        supabase_url=SUPABASE_URL,
+        supabase_key=SUPABASE_KEY,
+        options=options
+    )
 except Exception as e:
     print(f"⚠️  Failed to initialize Supabase client: {e}")
-    print("Using placeholder - database operations will fail.")
-    supabase = None
+    print("Attempting fallback initialization...")
+    try:
+        # Fallback: simple initialization
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception as e2:
+        print(f"⚠️  Fallback also failed: {e2}")
+        print("Using placeholder - database operations will fail.")
+        supabase = None
 
 
 class DatabaseHelper:
