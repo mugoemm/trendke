@@ -529,7 +529,39 @@ VITE_LIVEKIT_URL=wss://your-livekit.cloud
 
 This project is licensed under the MIT License.
 
-## 🙏 Acknowledgments
+## � Screenshots
+
+### Homepage - Video Feed
+![Homepage](docs/screenshots/homepage.png)
+*Vertical scrolling video feed with engagement features*
+
+### Live Streaming
+![Live Stream](docs/screenshots/live-stream.png)
+*Real-time live streaming with chat and gifting*
+
+### Creator Dashboard
+![Dashboard](docs/screenshots/dashboard.png)
+*Analytics and earnings tracking for creators*
+
+### Upload Interface
+![Upload](docs/screenshots/upload.png)
+*Simple video upload with metadata*
+
+> **Note:** Screenshots will be added after deployment testing
+
+## 🎥 Video Demonstration
+
+📹 **[Watch 10-Minute Demo Video](https://youtu.be/YOUR_VIDEO_ID)**
+
+*Video covers:*
+- Platform overview and features
+- User registration and authentication
+- Video upload and browsing
+- Live streaming capabilities
+- Gift system and monetization
+- Technical architecture walkthrough
+
+## �🙏 Acknowledgments
 
 - FastAPI for the amazing Python web framework
 - React for the frontend library
