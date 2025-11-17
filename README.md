@@ -532,26 +532,24 @@ This project is licensed under the MIT License.
 ## � Screenshots
 
 ### Homepage - Video Feed
-![Homepage](docs/screenshots/homepage.png)
+![Homepage](Homepage.PNG)
 *Vertical scrolling video feed with engagement features*
 
-### Live Streaming
-![Live Stream](docs/screenshots/live-stream.png)
-*Real-time live streaming with chat and gifting*
+### Signup Page
+![Signup Page](signup%20page.PNG)
+*User registration interface*
 
-### Creator Dashboard
-![Dashboard](docs/screenshots/dashboard.png)
-*Analytics and earnings tracking for creators*
+### Backend Deployment on Render
+![Backend Render](backend-on-render.PNG)
+*Backend API deployed and running on Render*
 
-### Upload Interface
-![Upload](docs/screenshots/upload.png)
-*Simple video upload with metadata*
-
-> **Note:** Screenshots will be added after deployment testing
+> **Note:** Screenshots show the deployed application in action
 
 ## 🎥 Video Demonstration
 
-📹 **[Watch Demo Video](d:\OBS STUDIO_R\2025-11-17 17-23-20.mkv)**
+📹 **Video Demo Available**
+
+*Video demonstration file: `2025-11-17 17-23-20.mkv`*
 
 *Video covers:*
 - Platform overview and features
@@ -560,6 +558,8 @@ This project is licensed under the MIT License.
 - Live streaming capabilities
 - Gift system and monetization
 - Technical architecture walkthrough
+
+> **Note:** Video file included in project submission. For online viewing, upload to YouTube and update this section with the link.
 
 ## �🙏 Acknowledgments
 
